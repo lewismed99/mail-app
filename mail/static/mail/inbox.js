@@ -34,6 +34,8 @@ function load_mailbox(mailbox) {
 }
 
 
+
+
 function send_email(event){
   event.preventDefault()
   const recipients =document.querySelector('#compose-recipients').value 
