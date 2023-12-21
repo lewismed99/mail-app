@@ -31,6 +31,26 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+
+  fetch(`/emails/${mailbox}`)
+.then(response => response.json())
+.then(emails => {
+    // loop through emails and load foreach
+    emails.forEach(singleEmail=>{
+
+      const newEmail = document.createElement('div');
+      newEmail.innerHTML = 'This is the content of the div.';
+      newEmail.addEventListener('click', function() {
+          console.log('This element has been clicked!')
+      });
+      document.querySelector('#emails-view').append(newEmail);
+
+      //create div for each email
+    })
+
+    // ... do something else with emails ...
+});
 }
 
 
@@ -53,7 +73,7 @@ function send_email(event){
   })
   .then(response => response.json())
   .then(result => {
-      // Print result
+      // loop through email asnd create div for each
       console.log(result);
       load_mailbox('sent')
   });
