@@ -23,6 +23,57 @@ function compose_email() {
   document.querySelector('#compose-body').value = '';
 }
 
+
+
+function viewEmail(id){
+  fetch(`/emails/${id}`)
+  .then(response => response.json())
+  .then(email => {
+      // Print email
+      console.log(email);
+     // document.querySelector('#emails-view').style.display="none"
+     // document.querySelector('#compose-view').style.display = 'none';
+     // document.querySelector('#email-detail-view').style.display="block";
+
+
+     // document.querySelector('#email-detail-view').innerHTMl='hi'
+
+
+      document.querySelector('#emails-view').style.display = 'none';
+      document.querySelector('#compose-view').style.display = 'none';
+      document.querySelector('#email-detail-view').style.display = 'block';
+    
+     // document.querySelector('#email-detail-view').innerHTML='hi'
+      document.querySelector('#email-detail-view').innerHTML=`<ul class="list-group">
+      <li class="list-group-item active"><strong>From:</strong>${email.sender}</li>
+      <li class="list-group-item active"><strong>To:</strong>${email.recipients}</li>
+      <li class="list-group-item active"><strong>subject:</strong>${email.subject}</li>
+      <li class="list-group-item active"><strong>Timestamp:</strong>${email.timestamp}</li>
+      <li class="list-group-item active"><strong>Body:</strong>${email.body}</li>
+    </ul>`
+      // ... do something else with email ...
+
+//change to read
+if(!email.read){
+
+  fetch(`/emails/${email.id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+        read: true
+    })
+  })
+}
+
+
+//archive and unarchive 
+  });
+
+
+
+  console.log(id)
+  
+  }
+
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
@@ -38,16 +89,41 @@ function load_mailbox(mailbox) {
 .then(emails => {
     // loop through emails and load foreach
     emails.forEach(singleEmail=>{
-
+      console.log(singleEmail)
       const newEmail = document.createElement('div');
-      newEmail.innerHTML = 'This is the content of the div.';
-      newEmail.addEventListener('click', function() {
-          console.log('This element has been clicked!')
+
+      newEmail.className='list-group-item'
+      
+      newEmail.innerHTML = `<h6>sender: ${singleEmail.sender}</h6>
+      <h5>${ singleEmail.subject}</h5>
+      <p>${singleEmail.timestamp}</p>`// this give us the time stamp or time email was sent subhjecvt and who sent the email
+    
+
+      //change background color on email if read to grey and whiote if unread
+      console.log(singleEmail.read)
+
+      if (singleEmail.read==true){
+        newEmail.className='read'
+        newEmail.style.backgroundColor="grey"
+      }
+      else{
+        newEmail.className='unread'
+        newEmail.style.backgroundColor="white"
+      }
+
+      console.log(newEmail.className)
+    //  newEmail.className=singleEmail.read?'read':'unread';
+
+      newEmail.addEventListener('click', function(){
+        viewEmail(singleEmail.id)
       });
       document.querySelector('#emails-view').append(newEmail);
 
       //create div for each email
     })
+
+
+
 
     // ... do something else with emails ...
 });
@@ -79,3 +155,4 @@ function send_email(event){
   });
 
 }
+
