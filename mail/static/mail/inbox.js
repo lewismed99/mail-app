@@ -44,13 +44,17 @@ function viewEmail(id){
       document.querySelector('#email-detail-view').style.display = 'block';
     
      // document.querySelector('#email-detail-view').innerHTML='hi'
-      document.querySelector('#email-detail-view').innerHTML=`<ul class="list-group">
-      <li class="list-group-item active"><strong>From:</strong>${email.sender}</li>
-      <li class="list-group-item active"><strong>To:</strong>${email.recipients}</li>
-      <li class="list-group-item active"><strong>subject:</strong>${email.subject}</li>
-      <li class="list-group-item active"><strong>Timestamp:</strong>${email.timestamp}</li>
-      <li class="list-group-item active"><strong>Body:</strong>${email.body}</li>
-    </ul>`
+      document.querySelector('#email-detail-view').innerHTML=`
+      
+      <ul class="list-group">
+  <li class="list-group-item"><strong>From:</strong>${email.sender}</li>
+  <li class="list-group-item"><strong>To:</strong>${email.recipients}</li>
+  <li class="list-group-item"><strong>subject:</strong>${email.subject}</li>
+  <li class="list-group-item">strong>Timestamp:</strong>${email.timestamp}</li>
+  <li class="list-group-item"><strong>Body:</strong>${email.body}</li>
+</ul>`
+
+      
       // ... do something else with email ...
 
 //change to read
@@ -66,6 +70,21 @@ if(!email.read){
 
 
 //archive and unarchive 
+
+
+const btn_arch = document.createElement('button');
+btn_arch.innerHTML = email.archived?'Unarchived':"Archive"
+btn_arch.className=email.archived?"btn btn-success":"btn btn-danger"
+btn_arch.addEventListener('click', function() {
+  fetch(`/emails/${email.id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+        archived: !email.archived
+    })
+  })
+  .then(()=>{load_mailbox('archive')})
+});
+document.querySelector('#email-detail-view').append(btn_arch);
   });
 
 
